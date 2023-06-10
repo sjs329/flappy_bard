@@ -4,6 +4,12 @@ var canvas = document.getElementById("canvas");
 // This variable stores the 2D context for the canvas.
 var ctx = canvas.getContext("2d");
 
+var on_mobile = false;
+if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+  // true for mobile device
+  on_mobile = true;
+}
+
 // This object stores the properties of the bird.
 var bird = {
   // The x-coordinate of the bird.
@@ -195,7 +201,11 @@ function draw() {
     ctx.fillStyle = "white";
     ctx.font = "30px Arial";
     ctx.fillText("Ouch, that hurt!",150, 230);
-    ctx.fillText("Press 'r' to try again", 120, 270);
+    if (on_mobile) {
+      ctx.fillText("Tap to try again", 150, 270);
+    } else {
+      ctx.fillText("Press 'r' to try again", 120, 270);
+    }
   }
 }
 
@@ -216,6 +226,19 @@ window.addEventListener("keydown", function(event) {
     reset();
   }
 });
+
+// Also check for touch events
+window.addEventListener("touchstart", function(event) {
+  if (dead) {
+    reset();
+  }
+  else {
+    bird.velocity = -400;
+    game_started = true;
+  }
+});
+
+
 
 // Initialize everything
 reset();
