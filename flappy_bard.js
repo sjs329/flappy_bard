@@ -8,6 +8,7 @@ var on_mobile = false;
 if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
   // true for mobile device
   on_mobile = true;
+  console.log("On mobile!")
 }
 
 // This object stores the properties of the bird.
@@ -31,10 +32,15 @@ var bird = {
   gravity: 2000.0
 };
 
+// Constants / settings
+var MOBILE_RESTART_DELAY_S = 1.5;
+
 // Declare global variables (they'll get initialized when we call reset() at the bottom)
 var pipes = [];
 var game_started;
 var dead;
+var time_of_death_ms;
+var time_since_death_s;
 var score;
 var travel_speed;
 var dist_travelled;
@@ -46,6 +52,8 @@ function reset() {
   pipes.push(createPipe());
   game_started = false
   dead = false;
+  time_of_death_ms = undefined;
+  time_since_death_s = undefined;
   score = 0;
   bird.x = 200;
   bird.y = 200;
@@ -105,6 +113,13 @@ function updateTimeDistSpeed(new_timestamp_ms) {
     }
   }
   prev_run_time_ms = new_timestamp_ms;
+
+  if (dead) {
+    if (time_of_death_ms == undefined) {
+      time_of_death_ms = new_timestamp_ms;
+    }
+    time_since_death_s = (new_timestamp_ms - time_of_death_ms) / 1000.0;
+  }
 }
 
 function updateObjects(elapsed_time_s) {
@@ -195,7 +210,11 @@ function draw() {
   if (!game_started) {
     ctx.fillStyle = "white";
     ctx.font = "30px Arial";
-    ctx.fillText("Press space or up arrow to begin", 25, 250);
+    if (on_mobile) {
+      ctx.fillText("Tap to begin", 160, 250);
+    } else {
+      ctx.fillText("Press space or up arrow to begin", 25, 250);
+    }
   }
 
   if (dead)
@@ -204,7 +223,9 @@ function draw() {
     ctx.font = "30px Arial";
     ctx.fillText("Ouch, that hurt!",150, 230);
     if (on_mobile) {
-      ctx.fillText("Tap to try again", 150, 270);
+      if (time_since_death_s >= MOBILE_RESTART_DELAY_S) {
+        ctx.fillText("Tap to try again", 150, 270);
+      }
     } else {
       ctx.fillText("Press 'r' to try again", 120, 270);
     }
@@ -231,7 +252,7 @@ window.addEventListener("keydown", function(event) {
 
 // Also check for touch events
 window.addEventListener("touchstart", function(event) {
-  if (dead) {
+  if (dead && time_since_death_s >= MOBILE_RESTART_DELAY_S) {
     reset();
   }
   else {
