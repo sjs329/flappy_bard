@@ -99,8 +99,10 @@ function update(timestamp_ms) {
 function updateTimeDistSpeed(new_timestamp_ms) {
   if (prev_run_time_ms != undefined) {
     elapsed_time_s = (new_timestamp_ms - prev_run_time_ms) / 1000.0;
-    dist_travelled += travel_speed * elapsed_time_s;
-    travel_speed += (0.0002 * dist_travelled * elapsed_time_s);
+    if (game_started) {
+      dist_travelled += travel_speed * elapsed_time_s;
+      travel_speed += (0.0002 * dist_travelled * elapsed_time_s);
+    }
   }
   prev_run_time_ms = new_timestamp_ms;
 }
@@ -225,7 +227,7 @@ window.addEventListener("keydown", function(event) {
   if (dead && event.keyCode == 82) { // "r" key
     reset();
   }
-});
+}, false);
 
 // Also check for touch events
 window.addEventListener("touchstart", function(event) {
@@ -236,7 +238,7 @@ window.addEventListener("touchstart", function(event) {
     bird.velocity = -400;
     game_started = true;
   }
-});
+}, false);
 
 
 
