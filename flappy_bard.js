@@ -1,12 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Flappy Bard</title>
-</head>
-<body>
-<canvas id="canvas" width="500" height="500"></canvas>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.12.0/p5.min.js"></script> -->
-<script>
 // This variable stores the canvas element.
 var canvas = document.getElementById("canvas");
 
@@ -231,6 +222,3 @@ reset();
 
 // Start the game loop.
 requestAnimationFrame(update);
-</script>
-</body>
-</html>
