@@ -48,6 +48,9 @@ var prev_run_time_ms;
 var elapsed_time_s;
 
 function reset() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  
   pipes = [];
   pipes.push(createPipe());
   game_started = false
@@ -223,7 +226,7 @@ function draw() {
     ctx.font = "30px Arial";
     ctx.fillText("Ouch, that hurt!",150, 230);
     if (on_mobile) {
-      if (time_since_death_s >= MOBILE_RESTART_DELAY_S) {
+      if (time_since_death_s != undefined && time_since_death_s >= MOBILE_RESTART_DELAY_S) {
         ctx.fillText("Tap to try again", 150, 270);
       }
     } else {
@@ -260,11 +263,25 @@ window.addEventListener("touchstart", function(event) {
     game_started = true;
   }
 }, false);
+        
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+              
+  /**
+   * Your drawings need to be inside this function otherwise they will be reset when 
+   * you resize the browser window and the canvas goes will be cleared.
+   */
+  draw(); 
+}
 
 
 
 // Initialize everything
 reset();
+
+// resize the canvas to fill browser window dynamically
+window.addEventListener('resize', resizeCanvas, false);
 
 // Start the game loop.
 requestAnimationFrame(update);
