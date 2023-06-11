@@ -46,11 +46,12 @@ var travel_speed;
 var dist_travelled;
 var prev_run_time_ms;
 var elapsed_time_s;
+var highscore = 0;
 
 function reset() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  
+
   pipes = [];
   pipes.push(createPipe());
   game_started = false
@@ -157,6 +158,9 @@ function updateScore() {
     if (!pipe.passed && (pipe.x+pipe.width/2 < bird.x-bird.width/2)) {
         pipe.passed = true;
         score++;
+        if (score >= highscore) {
+          highscore = score;
+        }
     }
   }
 }
@@ -207,6 +211,7 @@ function draw() {
   ctx.fillStyle = "white";
   ctx.font = "30px Arial";
   ctx.fillText("Score: " + score.toString(), 10, 30);
+  ctx.fillText("Highscore: " + highscore.toString(), 10, 60);
 
   
   // Draw start text if not started
